@@ -1,8 +1,6 @@
 import { db } from "$lib/server/db";
 import { users, sessions } from "$lib/server/db/schema";
-import { eq } from "drizzle-orm";
 import bcrypt from "bcrypt";
-import { redirect } from "@sveltejs/kit";
 
 export const actions = {
   default: async ({ request, cookies }) => {
@@ -10,19 +8,21 @@ export const actions = {
     const email = form.get("email") as string;
     const password = form.get("password") as string;
 
-    const result = await db
-      .select()
-      .from(users)
-      .where(eq(users.email, email));
+    // パスワードをハッシュ化
+    const hashed = await bcrypt.hash(password, 10);
 
-    const user = result[0];
-    if (!user) return { error: "Invalid credentials" };
+    // ユーザー作成
+    const [user] = await db
+      .insert(users)
+      .values({
+        email,
+        hashed_password: hashed
+      })
+      .returning();
 
-    const ok = await bcrypt.compare(password, user.hashed_password);
-    if (!ok) return { error: "Invalid credentials" };
-
+    // セッション作成
     const sessionId = crypto.randomUUID();
-    const expires = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7);
+    const expires = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7); // 7日
 
     await db.insert(sessions).values({
       id: sessionId,
@@ -30,13 +30,14 @@ export const actions = {
       expiresAt: expires
     });
 
+    // Cookie にセッションIDを保存
     cookies.set("session_id", sessionId, {
       path: "/",
       httpOnly: true,
-      secure: false
+      secure: false // 本番では true
     });
 
-    // 🔥 ログイン成功 → ホームへリダイレクト
-    throw redirect(302, "/");
+    // ログインページにリダイレクトして、ログインを促す
+    throw redirect(303, "/login");
   }
 };

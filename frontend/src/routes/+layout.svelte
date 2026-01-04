@@ -1,7 +1,9 @@
 <script lang="ts">
 	import favicon from '$lib/assets/favicon.svg';
+	// import Button from '$lib/components/Button.svelte'; // Button コンポーネントをインポート
 
-	let { children } = $props();
+	let { children, data } = $props();
+	console.log('+layout.svelte: data is', data); // <-- デバッグ用のログを挿入する場所
 </script>
 
 <svelte:head>
@@ -13,7 +15,47 @@
 	<a href="todos">todos</a>
 	<a href="api-demo">apis</a>
 
-
+	{#if data.user}
+		<span class="user-info">Welcome, {data.user.email}</span>
+		<form method="POST" action="/signout" data-sveltekit-reload>
+			<button type="submit">Sign out</button>
+		</form>
+	{/if}
 </nav>
 
 {@render children()}
+
+<style>
+	nav {
+		display: flex;
+		gap: 1em;
+		padding: 1em;
+		background: #f0f0f0;
+		align-items: center; /* 中央揃え */
+	}
+
+	nav a {
+		text-decoration: none;
+		color: #333;
+	}
+
+	nav a:hover {
+		text-decoration: underline;
+	}
+
+	.user-info {
+		margin-left: auto; /* 他の要素を左に寄せ、これを右に寄せる */
+		margin-right: 1em;
+	}
+	nav form button {
+		padding: 0.5em 1em;
+		background-color: #dc3545; /* Bootstrapのdangerカラー */
+		color: white;
+		border: none;
+		border-radius: 0.25rem;
+		cursor: pointer;
+	}
+	nav form button:hover {
+		background-color: #c82333;
+	}
+</style>

@@ -20,6 +20,7 @@ export const handle = async ({ event, resolve }) => {
         .where(eq(users.id, session.userId));
 
       event.locals.user = userResult[0];
+      console.log('hooks.server.ts: locals.user set', event.locals.user);
     }
   }
 
