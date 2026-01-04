@@ -1,3 +1,19 @@
+// 従来の。
+
+// import { drizzle } from 'drizzle-orm/postgres-js';
+// import postgres from 'postgres';
+// import * as schema from './schema';
+// import { env } from '$env/dynamic/private';
+
+// if (!env.DATABASE_URL) throw new Error('DATABASE_URL is not set');
+
+// const client = postgres(env.DATABASE_URL);
+
+// export const db = drizzle(client, { schema });
+
+
+// Neon
+// frontend/src/lib/server/db/index.ts
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import * as schema from './schema';
@@ -5,6 +21,8 @@ import { env } from '$env/dynamic/private';
 
 if (!env.DATABASE_URL) throw new Error('DATABASE_URL is not set');
 
-const client = postgres(env.DATABASE_URL);
+const client = postgres(env.DATABASE_URL, {
+  ssl: 'require'   // ← Neon では必須
+});
 
 export const db = drizzle(client, { schema });
