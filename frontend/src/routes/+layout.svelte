@@ -11,15 +11,17 @@
 </svelte:head>
 
 <nav>
-	<a href="./">home</a>
-	<a href="todos">todos</a>
-	<a href="api-demo">apis</a>
-
 	{#if data.user}
+		<a href="./">home</a>
+		<a href="todos">todos</a>
+		<a href="api-demo">apis</a>
+
 		<span class="user-info">Welcome, {data.user.email}</span>
 		<form method="POST" action="/signout" data-sveltekit-reload>
 			<button type="submit">Sign out</button>
 		</form>
+	{:else}
+		<span class="app-title">My Application</span>
 	{/if}
 </nav>
 
@@ -32,6 +34,11 @@
 		padding: 1em;
 		background: #f0f0f0;
 		align-items: center; /* 中央揃え */
+	}
+
+	.app-title {
+		font-weight: bold;
+		font-size: 1.2rem;
 	}
 
 	nav a {
