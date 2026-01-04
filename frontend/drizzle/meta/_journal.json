@@ -8,6 +8,20 @@
       "when": 1767533179789,
       "tag": "0000_fixed_dragon_lord",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1767543089700,
+      "tag": "0001_complete_whiplash",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1767545721136,
+      "tag": "0002_redundant_gamora",
+      "breakpoints": true
     }
   ]
 }

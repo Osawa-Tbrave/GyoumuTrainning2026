@@ -9,3 +9,17 @@ export const todos = pgTable('todos', {
   created_at: timestamp('created_at', { precision: 6 }).defaultNow(),
   updated_at: timestamp('updated_at', { precision: 6 }).defaultNow(),
 });
+
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  email: text("email").notNull(),
+  hashed_password: text("hashed_password").notNull(),
+  created_at: timestamp("created_at", { precision: 6 }).defaultNow()
+});
+
+export const sessions = pgTable("sessions", {
+  id: text("id").primaryKey(),
+  userId: serial("user_id").notNull(),
+  expiresAt: timestamp("expires_at", { precision: 6 }).notNull()
+});
+

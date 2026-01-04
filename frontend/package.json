@@ -25,6 +25,7 @@
 		"@sveltejs/adapter-auto": "^7.0.0",
 		"@sveltejs/kit": "^2.49.1",
 		"@sveltejs/vite-plugin-svelte": "^6.2.1",
+		"@types/bcrypt": "^6.0.0",
 		"@types/node": "^24",
 		"@vitest/browser-playwright": "^4.0.15",
 		"drizzle-kit": "^0.31.8",
@@ -45,6 +46,11 @@
 		"vitest-browser-svelte": "^2.0.1"
 	},
 	"dependencies": {
+		"@auth/core": "^0.41.1",
+		"@auth/sveltekit": "^1.11.1",
+		"@lucia-auth/adapter-postgresql": "^3.1.2",
+		"bcrypt": "^6.0.0",
+		"lucia": "^3.2.2",
 		"postgres": "^3.4.7"
 	}
 }
