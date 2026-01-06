@@ -37,6 +37,6 @@ export const actions = {
     });
 
     // 🔥 ログイン成功 → todosへ直接リダイレクト
-    throw redirect(302, "/todos");
+    throw redirect(302, "/");
   }
 };
