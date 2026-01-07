@@ -1,0 +1,291 @@
+openapi: 3.0.0
+info:
+  title: SvelteKit Application API
+  version: 1.0.0
+  description: API documentation for the SvelteKit application's server-side routes and actions.
+
+servers:
+  - url: http://localhost:5173 # Assuming default SvelteKit dev server port
+
+paths:
+  /signup:
+    post:
+      summary: User registration
+      operationId: signupUser
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: User's email address
+                password:
+                  type: string
+                  format: password
+                  minLength: 8
+                  description: User's password (min 8 chars, incl. uppercase and lowercase)
+              required:
+                - email
+                - password
+      responses:
+        '200':
+          description: User successfully registered (implicit success before redirect)
+        '303':
+          description: Redirect to home page upon successful registration
+          headers:
+            Location:
+              schema:
+                type: string
+                example: '/'
+        '400':
+          description: Bad request (validation errors, e.g., missing fields, invalid email, weak password)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                  error:
+                    type: string
+  
+  /login:
+    post:
+      summary: User login
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: User's email address
+                password:
+                  type: string
+                  format: password
+                  minLength: 8
+                  description: User's password (min 8 chars, incl. uppercase and lowercase)
+              required:
+                - email
+                - password
+      responses:
+        '200':
+          description: User successfully logged in (implicit success before redirect)
+        '302':
+          description: Redirect to home page upon successful login
+          headers:
+            Location:
+              schema:
+                type: string
+                example: '/'
+        '400':
+          description: Bad request (validation errors or invalid credentials)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                  error:
+                    type: string
+  
+  /signout:
+    get:
+      summary: Redirect to login page
+      operationId: redirectToLoginFromSignoutPage
+      description: Direct access to the signout page redirects to the login page.
+      responses:
+        '303':
+          description: Redirect to login page
+          headers:
+            Location:
+              schema:
+                type: string
+                example: '/login'
+    post:
+      summary: User logout
+      operationId: logoutUser
+      description: Invalidates the user's session and redirects to the login page.
+      responses:
+        '200':
+          description: User successfully logged out (implicit success before redirect)
+        '303':
+          description: Redirect to login page upon successful logout
+          headers:
+            Location:
+              schema:
+                type: string
+                example: '/login'
+  
+  /:
+    get:
+      summary: Root page (requires authentication)
+      operationId: getRootPage
+      description: Serves the root page content if the user is authenticated. Redirects to login otherwise.
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Successfully served root page content (user is authenticated)
+        '307':
+          description: Redirect to login page if unauthenticated
+          headers:
+            Location:
+              schema:
+                type: string
+                example: '/login'
+
+  /todos:
+    get:
+      summary: Get all active todo items
+      operationId: getTodos
+      description: Retrieves a list of all todo items that are not marked as deleted.
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: A list of todo items.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TodoItem'
+        '401':
+          description: Unauthorized (if session security is implicitly applied here)
+  
+  /todos/create: # OpenAPI treats /todos?/create as a regular path, adjusting for SvelteKit action
+    post:
+      summary: Create a new todo item
+      operationId: createTodo
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                task:
+                  type: string
+                  description: The description of the new todo item.
+              required:
+                - task
+      responses:
+        '200':
+          description: Todo item successfully created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+        '400':
+          description: Bad request (e.g., missing task).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  task:
+                    type: string
+                  missing:
+                    type: boolean
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error (e.g., database error).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  
+  /todos/delete: # OpenAPI treats /todos?/delete as a regular path, adjusting for SvelteKit action
+    post:
+      summary: Mark a todo item as deleted
+      operationId: deleteTodo
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  format: int64
+                  description: The ID of the todo item to delete.
+              required:
+                - id
+      responses:
+        '200':
+          description: Todo item successfully marked as deleted.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+        '400':
+          description: Bad request (e.g., invalid ID).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error (e.g., database error).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+components:
+  schemas:
+    TodoItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier for the todo item.
+        task:
+          type: string
+          description: Description of the todo item.
+        is_deleted:
+          type: boolean
+          description: Whether the todo item is marked as deleted.
+          default: false
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: session_id
+      description: Authentication using session_id cookie.
