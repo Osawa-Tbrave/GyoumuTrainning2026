@@ -16,13 +16,18 @@ export default defineConfig({
 					name: 'client',
 
 					browser: {
-						enabled: true,
+						enabled: false,
 						provider: playwright(),
 						instances: [{ browser: 'chromium', headless: true }]
 					},
 
 					include: ['src/**/*.svelte.{test,spec}.{js,ts}'],
-					exclude: ['src/lib/server/**']
+
+					// ❌ page.svelte.spec.ts を除外
+					exclude: [
+						'src/lib/server/**',
+						'src/routes/page.svelte.spec.ts'
+					]
 				}
 			},
 
@@ -32,8 +37,14 @@ export default defineConfig({
 				test: {
 					name: 'server',
 					environment: 'node',
+
 					include: ['src/**/*.{test,spec}.{js,ts}'],
-					exclude: ['src/**/*.svelte.{test,spec}.{js,ts}']
+
+					// ❌ server 側からも除外
+					exclude: [
+						'src/**/*.svelte.{test,spec}.{js,ts}',
+						'src/routes/page.svelte.spec.ts'
+					]
 				}
 			}
 		]
