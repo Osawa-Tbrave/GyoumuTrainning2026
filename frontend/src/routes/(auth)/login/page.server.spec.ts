@@ -1,7 +1,7 @@
 // src/routes/(auth)/login/page.server.spec.ts
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { actions } from './+page.server';
-import { fail, redirect } from '@sveltejs/kit';
+import { fail } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
 import bcrypt from 'bcrypt';
 
