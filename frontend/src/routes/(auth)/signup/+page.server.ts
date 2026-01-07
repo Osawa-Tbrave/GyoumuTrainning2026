@@ -65,6 +65,6 @@ export const actions = {
     });
 
     // --- ログインページにリダイレクト ---
-    throw redirect(303, "/login");
+    throw redirect(303, "/");
   }
 };
