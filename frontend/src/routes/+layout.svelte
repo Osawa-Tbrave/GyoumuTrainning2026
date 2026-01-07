@@ -1,9 +1,7 @@
 <script lang="ts">
 	import favicon from '$lib/assets/favicon.svg';
-	// import Button from '$lib/components/Button.svelte'; // Button コンポーネントをインポート
 
 	let { children, data } = $props();
-	console.log('+layout.svelte: data is', data); // <-- デバッグ用のログを挿入する場所
 </script>
 
 <svelte:head>

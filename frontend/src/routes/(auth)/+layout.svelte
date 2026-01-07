@@ -3,8 +3,8 @@
 	let { children } = $props();
 </script>
 
-<div class="auth-container" data-testid="auth-container">
-	<div class="auth-form-wrapper" data-testid="auth-form-wrapper">
+<div class="auth-container">
+	<div class="auth-form-wrapper">
 		{@render children()}
 		<div class="switch-link">
 			{#if $page.route.id?.includes('/login')}
@@ -29,7 +29,7 @@
 	}
 	.auth-form-wrapper {
 		width: 100%;
-		max-width: 400px;
+		max-src/routes/(auth)/+layout.svelte
 		padding: 2rem;
 		border: 1px solid #e0e0e0;
 		border-radius: 8px;
